@@ -4,8 +4,6 @@
 # Author: Morgan Thompson
 # Date: February 28, 2019
 # Description: Exercises from the 'R for Data Science' online book
-# in preparation for a first-round technical interview for a Senior
-# Data Scientist role at LinkedIn.
 ###################################################################
 
 # DATA MANIPULATION ###############################################
@@ -969,4 +967,4 @@ carrier_planes %>%
 
 install.packages("stringr")
 library(stringr)
-                                         
+                   
