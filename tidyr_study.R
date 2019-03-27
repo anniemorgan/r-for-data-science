@@ -1,6 +1,6 @@
 ####################################################################
 # Title: R for Data Science Exercises
-# Filename: linkedin_prep.R
+# Filename: tidyr_study.R
 # Author: Morgan Thompson
 # Date: February 28, 2019
 # Description: Exercises from the 'R for Data Science' online book
@@ -9,6 +9,7 @@
 # DATA MANIPULATION ###############################################
 
 install.packages('tidyverse')
+install.packages('nycflights13')
 library(tidyverse)
 library(nycflights13)
 
@@ -16,19 +17,19 @@ data('mtcars')
 data('iris')
 
 mydata <- mtcars
-mydata <- as.tibble(mtcars)
+mydata <- as_tibble(mtcars)
 
 head(mydata)
 
 myiris <- iris
-myiris <- as.tibble(myiris)
+myiris <- as_tibble(myiris)
 
 head(myiris)
 
 head(flights)
 View(flights)
 
-options(tibble.print_max = Inf, tibble.print_min = Inf)
+options(tibble.print_max = 20, tibble.print_min = 20)
 options(tibble.width = Inf)
 
 #########################################################################################################
@@ -967,4 +968,32 @@ carrier_planes %>%
 
 install.packages("stringr")
 library(stringr)
-                   
+
+# String Basics exercises, 'R for Data Science' #######################################################
+
+# 1. In code that doesn't use stringr, you'll often see paste() and paste0().  What's the difference between
+#    the two functions?  What stringr function are they equivalent to?  How do the functions differ in their
+#    handling of NA?
+# 
+# paste() converts its arguments (via as.character) to character strings, and concatenates them, separating them
+# by the string given in sep.  paste() coerces NAs to "NA".  paste0() is equivalent to paste(..., sep = "", collapse).
+# If a value is specified for collapse, the results are concatenated into a single string with the elements separated
+# by the value specified for collapse.
+# The stringr function equivalent to paste() is str_c().  The stringr function equivalent to paste0() is 
+# str_c(..., collapse).  Instead of being changed into characters, str_c() keeps NAs as missing values.  Whenever
+# a missing value (NA) is combined with another string, the result will always be missing (NA).
+
+# 2. In your own words, describe the difference between the sep and collapse arguments to str_c().
+
+# The sep argument takes string elements, which could be strings or vectors of strings, and concatenates them using
+# the value specified by sep.  Vectors of strings are preserved as separate strings.  collapse concatenates the string 
+# values in a vector of strings together, using the value specified by collapse, into a single string.  Look at the
+# following example:
+
+x <- c("x", "y", "z")  # example vector of strings
+str_c("w", x, sep = "")  # first using sep = "" 
+# "wx" "wy" "wz"  # the "w" is distributed to each string in the vector of strings (x), separated by "" as specified
+str_c("w", x, collapse = "")  # now using collapse = "" 
+# "wxwywz"  # the "w" is still distributed to each string in the vector x, but now it's collapsed into a single
+# string, using "" as the separator, specified by collapse.
+
