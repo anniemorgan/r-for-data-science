@@ -997,3 +997,27 @@ str_c("w", x, collapse = "")  # now using collapse = ""
 # "wxwywz"  # the "w" is still distributed to each string in the vector x, but now it's collapsed into a single
 # string, using "" as the separator, specified by collapse.
 
+# 3. Use str_length() and str_sub() to extract the middle character from a string.  What will you do if the string
+#    has an even number of characters?
+
+# My name (Morgan) has an even number of characters, but my sister's (Molly) has an odd number.  I will use strings of 
+# both our names to do this exercise. I would like "" to be returned if a string has an even number of characters, and
+# obviously I'd like the middle character to be returned if a string has an odd number of characters.  This can be 
+# accomplished by adding 1 to the str_length() of a string, dividing by 2, and using ceiling() and floor() as the start
+# and end arguments to str_sub.  If a string has an odd number of characters, like the 5 characters in my sister's name,
+# then adding 1 to the str_length and dividing by 2 will yeild an integer that is the middle character position of the string.  
+# 5 + 1 = 6, 6 / 2 = 3, and calling str_sub("Molly", start = 3, end = 3) will return "l" as we wish.  If a string has an 
+# even number of characters, like the 6 in my name, adding 1 to the str_length and dividing by 0 will yield a fraction.
+# In the case of my name, 6 + 1 = 7, and 7 / 2 = 3.5. ceiling(3.5) = 4, and floor(3.5) = 3.  Calling str_sub("Morgan", 
+# start = 4, end = 3) will return the empty string, "", as desired.  This logic will work for characters of any integer
+# length.
+
+find.sub.string <- function(string) {
+  str_sub(string, 
+          start = ceiling((str_length(string) + 1) / 2), 
+          end = floor((str_length(string) + 1) / 2))
+}
+
+find.sub.string("Molly")
+find.sub.string("Morgan")
+  
