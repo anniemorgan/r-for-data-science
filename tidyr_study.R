@@ -1020,4 +1020,42 @@ find.sub.string <- function(string) {
 
 find.sub.string("Molly")
 find.sub.string("Morgan")
-  
+
+# 4. What does str_wrap() do?  When might you want to use it?
+
+# str_wrap() implements the Knuth-Plass paragraph wrapping algorithm.  It takes arguments:
+# string - a character vector of strings
+# width - positive integer giving target line width in characters.  Width <= 1 will put each word on its own line.
+# indent - non-negative integer giving indentation of first line in each paragraph.
+# exdent - non-negative integer giving indentation of following lines in each paragraph.
+
+string <- "Hi, my name is Morgan Thompson.  I was born in San Francisco, California.  I grew up mostly in Orinda, California. 
+  My parents are from Wyoming and Virginia.  I spent holidays in both states at my grandparents' homes.  I traveled a lot as
+ a child, due to my mom's employement with a major airline, and the free tickets we received because of that.  I went to school
+ in Nashville, Tennessee for my bachelor's degree, and in Berkeley, California for my master's degree.  I loved being in school."
+
+str_wrap(string)
+cat(str_wrap(string), "\n")
+cat(str_wrap(string, width = 40), "\n")
+cat(str_wrap(string, width = 40, indent = 5), "\n")
+cat(str_wrap(string, width = 40, indent = 5, exdent = 5), "\n")
+cat(str_wrap(string, width = 0), "\n")
+
+# You might want to use str_wrap() when you need to print out a block of text, and you'd like it formatted nicely, with indents
+# and within a certain limited space, rather than it printing across the whole screen without line breaks or any indentation.
+
+# 5. What does str_trim() do?  What's the opposite of str_trim()?
+
+# str_trim() removes whitespace from the start and end of a string.
+string <- "   Morgan     "
+str_trim(string)  
+
+# the opposite of str_trim() is str_pad(), which will pad a string with a given character number of whitespace.
+
+string <- "Morgan"
+str_pad(string, 10, "left")
+str_pad(string, 10, "right")
+str_pad(string, 10, "both")
+
+# 6. Write a function that turns (e.g.) a vector c("a", "b", "c") into the string "a, b, and c".  Think carefully
+#    about what it should do if given a vector of length 0, 1, or 2.
