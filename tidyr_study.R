@@ -1059,3 +1059,44 @@ str_pad(string, 10, "both")
 
 # 6. Write a function that turns (e.g.) a vector c("a", "b", "c") into the string "a, b, and c".  Think carefully
 #    about what it should do if given a vector of length 0, 1, or 2.
+
+# First, I'll create some sample string vectors.  I'm going to make one that is length 3, and the exact vector given
+# in the question.  Then I'll create vectors of incrementally smaller lengths, down to 0.  I'll also create a vector
+# of length > 3, to show what I want to happen in that scenario.  I decided to print out the result string minus the 
+# missing strings for string vectors of length < 3.  For string vectors of length > 3, I decided to print an error
+# message.  I'd like to keep this function limited to string vectors of length 3 or less, as I think it relates more
+# to the problem description.
+str <- c("a", "b", "c")
+str_2 <- c("a", "b")
+str_1 <- "a"
+str_0 <- vector(mode = "character", length = 0)
+str_4 <- c("a", "b", "c", "d")
+
+
+str_fun <- function(str) {
+  ifelse (
+    # if the length of the string vector equals 0, then print the string without any characters in it.
+    length(str) == 0, " , , and ",  
+      # if it's not length 0, but it's length 1, print the string with the one character in the first spot, the rest
+      # being left empty.
+      ifelse(length(str) == 1, str_c(str, ", , and "),
+        # if it's not length 1, but it's length 2, print the string with the two characters in the first two spots, 
+        # the last one remaining empy.
+        ifelse(length(str) == 2, str_c(str_c(str, collapse = ", "), " and "),
+          # if it's not length 2, but it's length 3, print the desired result string as given in the problem.
+          ifelse(length(str) == 3, str_c(str_c(str[1:2], collapse = ", "), str[3], sep = ", and "),
+            # if it's over length 3, print this error message:
+            "Too long!  Please enter a vector of length 3 or less.")
+        )
+      )
+  )
+}
+    
+str_fun(str)
+str_fun(str_2)
+str_fun(str_1)
+str_fun(str_0)
+str_fun(str_4)
+# it works!
+    
+# Matching Patterns with Regular Expressions exercises, 'R for Data Science' ##################################
