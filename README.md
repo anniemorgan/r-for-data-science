@@ -8,11 +8,3 @@ I'm working through Hadley Wickham and Garrett Grolemund's [*R for Data Science*
 ### References
 
 Wickham, Hadley, and Garrett Grolemund. 2017. *R for Data Science: Visualize, Model, Transform, Tidy, and Import Data*. 1st ed. O'Reilly Media.
-
-## Introduction to Algorithms
-
-I am working through *Introduction to Algorithms, Third Edition* by Cormen, Leiserson, Rivest and Stein. My solutions to some of the exercises and problems are saved in the file `intro_algo.R`. 
-
-### References
-
-Cormen, Thomas, Charles Leiserson, Ronald Rivest, and Clifford Stein. 2009. *Introduction to Algorithms*. 3rd ed. The MIT Press.
