@@ -1,11 +1,23 @@
 ####################################################################
 # Title: R for Data Science Exercises
-# Filename: tidyr_study.R
+# File name: tidyr_study.R
 # Author: Morgan Thompson
-# Date: February 28, 2019
-# Description: Exercises from the 'R for Data Science' online book
+# Date: January 4, 2023
+# Description: Exercises from 'R for Data Science' by Hadley Wickham and Garrett Grolemund
 ###################################################################
 
+# 1. INTRODUCTION #################################################
+
+install.packages("tidyverse")
+install.packages(c("nycflights13", "gapminder", "Lahman"))
+
+# 3. DATA VISUALIZATION ###########################################
+library(tidyverse)
+
+
+
+
+# BELOW: older work on this book, will be updated #################
 # DATA MANIPULATION ###############################################
 
 library(tidyverse)
