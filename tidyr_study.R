@@ -14,10 +14,33 @@ install.packages(c("nycflights13", "gapminder", "Lahman"))
 # 3. DATA VISUALIZATION ###########################################
 library(tidyverse)
 
+# 3.2.4 Exercises
+
+# 1.
+ggplot(data = mpg) # creates a blank graph
+
+# 2.
+nrow(mpg)  # 234 rows
+ncol(mpg)  # 11 columns
+
+# 3.
+?mpg
+# The drv variable describes the type of drive train, where f = front wheel drive, 
+# r = rear wheel drive, and 4 = 4 wheel drive.
+
+# 4.
+ggplot(data = mpg) + geom_point(mapping = aes(x = hwy, y = cyl))
+
+# 5.
+ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
+# This graph is not useful because both variables are categorical,
+# so we can't visualize the number of observations at each point
+# in a scatter plot.
 
 
 
-# BELOW: older work on this book, will be updated #################
+
+# BELOW: older work on this book ##################################
 # DATA MANIPULATION ###############################################
 
 library(tidyverse)
