@@ -37,6 +37,67 @@ ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
 # so we can't visualize the number of observations at each point
 # in a scatter plot.
 
+# 3.3.1 Exercises
+
+# 1.
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = "blue"))
+# Because "blue" was mapped to the color argument within aes(),
+# ggplot will try to scale the variable "blue" to levels of colors,
+# but because "blue" is the name of a color and not a variable, only
+# one color will be displayed in the plot. In order to make all the
+# points blue, run this code instead:
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+
+# 2.
+?mpg
+# categorical vars: manufacturer, model, trans, drv, fl, class
+# continuous vars: displ, year, cyl, cty, hwy
+mpg
+# the data types are printed in italics below the variables in the
+# mpg tibble
+
+# 3.
+ggplot(data = mpg) +
+    geom_point(mapping = aes(x = displ, y = hwy, color = cty))
+# when mapped to color, a continuous variable has an ombre color
+# scheme instead of distinct colors
+
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, size = year))
+# when mapped to size, ggplot will create artificial breaks within a
+# continuous variable in order to scale it
+
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, shape = cyl))
+# when mapped to shape, ggplot throws and error message saying
+# that a continuous variable cannot be mapped to the shape aesthetic,
+# and to choose a different aesthetic or apply the scale_shape_binned() 
+# function
+
+# 4.
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, size = class, color = class))
+# when a variable maps to multiple aesthetics, all of those aesthetics are
+# applied to the plot
+
+# 5.
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy),
+              shape = 23,
+              stroke = 1,
+              size = 4,
+              color = "green",
+              fill = "pink")
+# shapes 21-24 have a "stroke" aesthetic which is the size in mm of the 
+# border of the point
+
+# 6.
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = displ < 5))
+# the variable is treated as a logical data type, and the aesthetic
+# mapped to TRUE or FALSE values
 
 
 
