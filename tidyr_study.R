@@ -99,6 +99,24 @@ ggplot(data = mpg) +
 # the variable is treated as a logical data type, and the aesthetic
 # mapped to TRUE or FALSE values
 
+# 3.5.1 Exercises
+
+# 1.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cty, nrow = 2)
+# integer variables facet similarly to discrete variables - plots
+# are faceted on each integer value
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ displ, nrow = 2)
+# a variable of type double, such as displ, is treated similarly but
+# faceted on the values in the tenth decimal place
+
+# 2.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = drv, y = cyl))
+
 
 
 # BELOW: older work on this book ##################################
