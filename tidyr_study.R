@@ -116,6 +116,73 @@ ggplot(data = mpg) +
 # 2.
 ggplot(data = mpg) + 
   geom_point(mapping = aes(x = drv, y = cyl))
+# the empty cells in the plot with facet_grid(drv ~ cyl) represent the
+# lack of data for cars with a certain value for drv and cyl. For example,
+# there are no cars in the mpg dataset with drv = r and cyl = 4 or 5,
+# and there are no cars with drv = 5 and cyl = 5. Additionally, there are
+# no cars with cyl = 7 in the entire mpg data set. The facet with cyl = 7
+# doesn't show up on the facet grid plot, but it does exist in the plot
+# with aex(x = drv, y = cyl) because cyl is an integer data type and R tries
+# to scale it as such.
+
+# 3.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+# the . omits the facet in whichever dimension it is placed in the call
+# to facet_grid(). In the first plot with facet_grid(drv ~ .), the columns
+# dimension is not faceted, and in the second plot with facet_grid(. ~ drv),
+# the rows dimension is not faceted.
+
+# 4.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+# comparing the first plot (which is faceted) to the second (which uses
+# the color aesthetic), it is easier to visualize the variables within
+# each level of class. Using the color aesthetic, it's easier to visualize
+# the levels of class within the variables in the overall distribution of
+# the variables. If we wanted to visualize the distribution of the variables
+# in each level of class, it's better to use the faceted plot. However, if
+# we would rather visualize how class varies within the variables in their
+# greater distribution, it is better to use the color (or other applicable)
+# aesthetic. In a larger data set, faceting might be a better choice because
+# the increased amount of points in the overall plot may make the scaled
+# aesthetic more difficult to visualize.
+
+# 5.
+?facet_wrap
+# nrow and ncol allow us to specify a desired number of rows and columns,
+# respectively. dir allows us to specify either "h" for horizontal wrapping,
+# or "v" for vertical (the default). as.table either displays the facets like
+# a table with highest values at the bottom right if TRUE (the default), or
+# like a plot with highest values at the top right if FALSE. facet_grid()
+# doesn't have nrow and ncol arguments because it forms a matrix of panels
+# defined by row and column faceting variables. If a row or column variable
+# is omitted using . in the call to facet_grid(), the plot is simply not split 
+# on the omitted dimension (row or column).
+
+# 6.
+levels(as.factor(mpg$class))
+levels(as.factor(mpg$fl))
+# there are more unique levels in class than fl in mpg dataset
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(class ~ fl)
+
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(fl ~ class)
+# if the plot is laid out landscape style (horizontally), there is more space
+# for columns, so it's better to put the variable with more unique levels
+# in the column space.
 
 
 
