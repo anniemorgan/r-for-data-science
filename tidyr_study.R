@@ -184,7 +184,81 @@ ggplot(data = mpg) +
 # for columns, so it's better to put the variable with more unique levels
 # in the column space.
 
+# 3.6.1 Exercises
 
+# 1.
+# line chart:
+ggplot(data = mpg) +
+  geom_line(mapping = aes(x = displ, y = hwy))
+# boxplot:
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = drv, y = displ))
+# histogram:
+ggplot(data = mpg) +
+  geom_histogram(mapping = aes(x = displ))
+# area chart:
+ggplot(data = mpg) +
+  geom_area(mapping = aes(x = displ, y = hwy))
+
+# 2.
+# prediction: this will be a scatterplot of displ against hwy, on the x and y axes
+# respectively, plus a smoothed line of this variable without the shaded area 
+# that signifies the confidence interval. The scatterplot points will be different
+# colors based on the values of drv for each observation, and there will be three
+# different smoothed lines of displ x hwy, each a different color for each grouping 
+# of drv. The plot will also have a legend for the colors corresponding to each 
+# value of drv.
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+
+# 3.
+# show.legend = FALSE removes the legend from a plot that has a legend by default.
+# I think Hadley used it earlier in the chapter so that the plot would match the 
+# style of the plot that used group, which does not default to showing a legend.
+
+# 4.
+?geom_smooth
+# The se argument to geom_smooth accepts a logical value (TRUE or FALSE) as to 
+# whether to display a confidence interval around the smooth line. It is TRUE
+# by default. If TRUE, we can specify the level of confidence interval using the
+# level argument. level is set to 0.95 by default. The confidence intervals set
+# by se are displayed as a shaded area around the smooth line in the plot.
+
+# 5.
+# No, they will not look different. In the first plot, the mapping is set in 
+# ggplot() which makes these values global for both geoms. In the second plot,
+# the mappings are identical for both geoms, and they match the global mappings
+# set in ggplot() in the first plot, so even though they are locally set in the
+# geom functions, the result will be the same.
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+
+# 6.
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(size = 3) +
+  geom_smooth(se = FALSE, size = 1.5)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(size = 3) +
+  geom_smooth(mapping = aes(group = drv), se = FALSE, size = 1.5)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point(size = 3) +
+  geom_smooth(se = FALSE, size = 1.5)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = drv), size = 3) +
+  geom_smooth(se = FALSE, size = 1.5)
+  
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = drv), size = 3) +
+  geom_smooth(mapping = aes(linetype = drv), se = FALSE, size = 1.5)
 
 # BELOW: older work on this book ##################################
 # DATA MANIPULATION ###############################################
