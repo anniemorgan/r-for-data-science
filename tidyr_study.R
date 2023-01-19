@@ -264,6 +264,80 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point(size = 5, color = "white") +
   geom_point(mapping = aes(color = drv))
 
+# 3.7.1 Exercises
+
+# 1.
+?stat_summary
+# the default geom of stat_summary() is geom_pointrange().
+ggplot(data = diamonds) +
+  geom_pointrange(
+    mapping = aes(x = cut, y = depth),
+    stat = "summary",
+    fun.min = min,
+    fun.max = max,
+    fun = median
+  )
+  
+# 2.
+?geom_col
+?geom_bar
+# geom_col() is a bar chart with the height of the bars representing values in 
+# the data. geom_bar() makes the height of the bars proportional to the number 
+# of cases in each group.
+
+# 3.
+# geom_bar() <--> stat_count()
+# geom__bin2d() <--> stat_bin_2d()
+# geom_boxplot() <--> stat_boxplot()
+# geom_contour_filled() <--> stat_contour_filled()
+# geom_contour() <--> stat_contour()
+# geom_count() <--> stat_sum()
+# geom_density_2d() <--> stat_density_2d()
+# geom_density() <--> stat_density()
+# geom_dotplot() <--> stat_bindot()
+# geom_function() <--> stat_function()
+# geom_sf() <--> stat_sf()
+# geom_smooth() <--> stat_smooth()
+# geom_violin() <--> stat_ydensity()
+# geom_hex() <--> stat_bin_hex()
+# geom_qq_line() <--> stat_qq_line()
+# geom_qq() <--> stat_qq()
+# geom_quantile() <--> stat_quantile()
+# these pairs tend to have the suffix names in common, and be documented on
+# the same help pages. They also tend to be defaults for each other's geom or
+# stat, respectively.
+
+# 4.
+?stat_smooth
+# stat_smooth() calculates the predicted value (y), the lower limit of the
+# confidence interval (ymin), the upper limit of the confidence interval (ymax),
+# and the standard error (se). The parameters controlling the behavior of
+# stat_smooth are method (smoothing method i.e. function to use, accepts NULL
+# or character vector e.g. "lm", "glm" etc. or a function e.g. stats::loess),
+# formula (smoothing formula to use in a custom method argument), se (TRUE to
+# display confidence interval bands, FALSE to omit them), na.rm (TRUE to remove
+# missing values silently, FALSE to remove missing values with a warning), and 
+# method.arg() (arguments other than formula to pass into the function in method).
+
+# 5.
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = after_stat(prop)))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = after_stat(prop)))
+# these plots calculate the proportions *within* each group, so the heights
+# of the bars are all equal to 1.
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = after_stat(prop), group = 1))
+
+# to recreate the stacked bar chart with filled colors, we need to create the
+# proportions of diamond colors (fill) within each diamond cut (bar).
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = after_stat(count) / sum(after_stat(count)),
+                         fill = color))
+        
+
 
 
 # BELOW: older work on this book ##################################
