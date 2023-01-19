@@ -260,6 +260,12 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point(mapping = aes(color = drv), size = 3) +
   geom_smooth(mapping = aes(linetype = drv), se = FALSE, size = 1.5)
 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(size = 5, color = "white") +
+  geom_point(mapping = aes(color = drv))
+
+
+
 # BELOW: older work on this book ##################################
 # DATA MANIPULATION ###############################################
 
