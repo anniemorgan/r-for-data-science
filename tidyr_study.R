@@ -337,6 +337,50 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = after_stat(count) / sum(after_stat(count)),
                          fill = color))
         
+# 3.8.1 Exercises
+
+# 1.
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+# this plot would benefit from jittering the points, as multiple points are "hiding"
+# behind others in the same location on the plot.
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point(position = "jitter")
+# the jittered points help reveal where more of the variables are concentrated in
+# the plot and better shows the overall distribution.
+
+# 2.
+?geom_jitter
+# width and height parameters control the amount of horizontal and vertical jitter,
+# respectively. The value is added to both sides of the point, so the total spread
+# is double the value specified in width and/or height.
+
+# 3.
+?geom_count
+# geom_count() is a variant of geom_point() that counts the number of observations
+# at each location, then maps the count to the point area. This is similar to 
+# geom_jitter in that both plots are useful for visualizing discrete data that runs
+# the risk of overplotting. They differ in the way they treat visualizing the over-
+# plotted points.
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_jitter()
+# the points are "jittered" so they don't all stack up on top of each other in discrete
+# locations on the plot, helping to show more individual points and their concentration
+# on the plot.
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_count()
+# geom_count() shows the concentration of points at each plot location via the area of
+# the point. The larger circles indicate more points concentrated at that location, so
+# that we can visualize the amount of points with a certain value without losing
+# the accuracy of the value itself.
+
+# 4.
+?geom_boxplot
+# the default position of geom_boxplot is "dodge2".
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = class, y = hwy, fill = class))
+        
+
 
 
 
