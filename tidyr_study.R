@@ -6,15 +6,20 @@
 # Description: Exercises from 'R for Data Science' by Hadley Wickham and Garrett Grolemund
 ###################################################################
 
+###################################################################
 # 1. INTRODUCTION #################################################
+###################################################################
 
 install.packages("tidyverse")
 install.packages(c("nycflights13", "gapminder", "Lahman"))
 
+###################################################################
 # 3. DATA VISUALIZATION ###########################################
+###################################################################
+
 library(tidyverse)
 
-# 3.2.4 Exercises
+# 3.2.4 Exercises #################################################
 
 # 1.
 ggplot(data = mpg) # creates a blank graph
@@ -37,7 +42,7 @@ ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
 # so we can't visualize the number of observations at each point
 # in a scatter plot.
 
-# 3.3.1 Exercises
+# 3.3.1 Exercises #################################################
 
 # 1.
 ggplot(data = mpg) +
@@ -99,7 +104,7 @@ ggplot(data = mpg) +
 # the variable is treated as a logical data type, and the aesthetic
 # mapped to TRUE or FALSE values
 
-# 3.5.1 Exercises
+# 3.5.1 Exercises #################################################
 
 # 1.
 ggplot(data = mpg) + 
@@ -184,7 +189,7 @@ ggplot(data = mpg) +
 # for columns, so it's better to put the variable with more unique levels
 # in the column space.
 
-# 3.6.1 Exercises
+# 3.6.1 Exercises #################################################
 
 # 1.
 # line chart:
@@ -264,7 +269,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
   geom_point(size = 5, color = "white") +
   geom_point(mapping = aes(color = drv))
 
-# 3.7.1 Exercises
+# 3.7.1 Exercises #################################################
 
 # 1.
 ?stat_summary
@@ -337,7 +342,7 @@ ggplot(data = diamonds) +
   geom_bar(mapping = aes(x = cut, y = after_stat(count) / sum(after_stat(count)),
                          fill = color))
         
-# 3.8.1 Exercises
+# 3.8.1 Exercises #################################################
 
 # 1.
 ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
@@ -380,7 +385,7 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 ggplot(data = mpg) +
   geom_boxplot(mapping = aes(x = class, y = hwy, fill = class))
         
-# 3.9.1 Exercises 
+# 3.9.1 Exercises #################################################
 
 # 1.
 ggplot(data = diamonds, mapping = aes(x = factor(1), fill = cut)) +
@@ -427,39 +432,42 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 # gallon is higher than city miles per gallon. The observed cars always have better
 # gas mileage on the highway than in city (non-highway) driving.
 
+###################################################################
+# 4. WORKFLOW: BASICS #############################################
+###################################################################
 
+# 4.4 Exercises ###################################################
 
-#####################################################################################
-# BELOW: older work on this book ####################################################
-# DATA MANIPULATION #################################################################
+# 1.
+my_variable <- 10
+my_varıable
+#> Error in eval(expr, envir, enclos): object 'my_varıable' not found
+# this code doesn't work because the character "i" is missing in 'my_varıable",
+# and is replaced with "ı". 
 
-library(tidyverse)
-library(nycflights13)
+# 2.
+ggplot(dota = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
 
-data('mtcars')
-data('iris')
+fliter(mpg, cyl = 8)
+filter(diamond, carat > 3)
 
-mydata <- mtcars
-mydata <- as_tibble(mtcars)
+# corrected code:
+ggplot(data = mpg) +  # "data", not "dota"
+  geom_point(mapping = aes(x = displ, y = hwy))
 
-head(mydata)
+filter(mpg, cyl == 8)  # "filter", not "fliter", and "cyl == 8", not "cyl = 8"
+filter(diamonds, carat > 3)  # "diamonds", not "diamond"
 
-myiris <- iris
-myiris <- as_tibble(myiris)
+# 3.
+# Pressing Alt + Shift + K brings up the Keyboard Shortcut Quick Reference, which
+# has a list of all the key combinations plus the shortcuts they enable.
 
-head(myiris)
+###################################################################
+# 5. DATA TRANSFORMATION ##########################################
+###################################################################
 
-head(flights)
-View(flights)
-
-options(tibble.print_max = 20, tibble.print_min = 20)
-options(tibble.width = Inf)
-
-#########################################################################################################
-# DATA TRANSFORMATION ###################################################################################
-#########################################################################################################
-
-# filter() exercises, 'R for Data Science' ###########################################
+# filter() exercises, 'R for Data Science' ########################
 
 # 1. Find all flights that
 #   1. Had an arrival delay of two or more hours
@@ -578,30 +586,30 @@ flights %>% transmute(air_time, arr_time, dep_time, arr_time - dep_time)
 # minutes instead of hour and minutes in one string.
 
 f <- flights %>% transmute(air_time, 
-                      arr_time_mins = time2mins(arr_time), 
-                      dep_time_mins = time2mins(dep_time), 
-                      arr_minus_dep = arr_time_mins - dep_time_mins,
-                      air_diff = air_time - arr_minus_dep
+                           arr_time_mins = time2mins(arr_time), 
+                           dep_time_mins = time2mins(dep_time), 
+                           arr_minus_dep = arr_time_mins - dep_time_mins,
+                           air_diff = air_time - arr_minus_dep
 )
 
 # 3. Compare dep_time, sched_dep_time, and dep_delay.  How would you expect those three numbers to be related?
 flights %>% select(dep_time, sched_dep_time, dep_delay)
 # I would expect dep_delay to be the difference of sched_dep_time and dep_time.
 f <- flights %>% transmute(dep_time, 
-                      sched_dep_time, 
-                      dep_time_mins = time2mins(dep_time), 
-                      sched_dep_time_mins = time2mins(sched_dep_time),
-                      delay_calc = dep_time_mins - sched_dep_time_mins,
-                      dep_delay,
-                      dep_diff = dep_delay - delay_calc)
+                           sched_dep_time, 
+                           dep_time_mins = time2mins(dep_time), 
+                           sched_dep_time_mins = time2mins(sched_dep_time),
+                           delay_calc = dep_time_mins - sched_dep_time_mins,
+                           dep_delay,
+                           dep_diff = dep_delay - delay_calc)
 
 f %>% filter(dep_diff != 0, dep_diff != 1440)
 
 # 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the 
 #    documentation for min_rank().
 f <- flights %>% transmute(arr_delay = sort(arr_delay, decreasing = TRUE, na.last = TRUE), 
-                      rank = min_rank(desc(sort(arr_delay, decreasing = TRUE, na.last = TRUE))))
-                      
+                           rank = min_rank(desc(sort(arr_delay, decreasing = TRUE, na.last = TRUE))))
+
 f %>% top_n(-10)
 
 # I chose arr_delay to find the most delayed flights, to account for catching up time in-flight, or losing time in-flight.  
@@ -631,7 +639,7 @@ f %>% top_n(-10)
 
 not_cancelled <- flights %>%
   filter(!is.na(dep_delay), !is.na(arr_delay))
-                      
+
 # 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider
 #    the following scenarios:
 #    * A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
@@ -778,73 +786,7 @@ flights %>%
 
 # 8. For each plane, count the number of flights before the first delay of greater than 1 hour.
 
-#########################################################################################################
-# TIBBLES ###############################################################################################
-#########################################################################################################
 
-# Tibbles exercises, 'R for Data Science' ###############################################################
-
-# 1. How can you tell if an object is a tibble? (Hint: try printing mtcars, which is a regular data frame)
-print(mtcars)
-as.tibble(mtcars)
-# A tibble will have the comment "A tibble:" followed by the dimensions of the tibble.  Only the first 10 rows (or however
-# many rows are set in option()) will print of a tibble.  Printing a data frame will show all rows. The columns of a tibble
-# will have the data type printed underneath, before the values. Additionally, a tibble will not create column names, or 
-# coerce columns into a different data type (e.g. strings as factors).
-
-# 2. Compare and contrast the following operations on a data.frame and equivalent tibble. What is different? Why might the 
-#    default data frame behaviors cause you frustration?
-df <- data.frame(abc = 1, xyz = "a")
-tb <- as.tibble(df)
-df$x
-tb$x
-# There is no column "x" in the data, but df$x returns the value for df$xyz. The tibble version does not return a value, 
-# which is desirable because there is no column "x" in the tibble.
-df[, "xyz"]
-class(df[, "xyz"])
-tb[, "xyz"]
-# df[, "xyz"] returned a factor, whereas tb[, "xyz"] returned another tibble, with the column name and data type of the column
-# printed below it, as is standard with tibbles. Tibbles are preferable in this instance because [ returns the same object
-# type.
-df[, c("abc", "xyz")
-class(df[, c("abc", "xyz")])
-tb[, c("abc", "xyz")]
-# The results of this operation on the data frame and the tibble seem to be the same, however you get more with the tibble,
-# as the column data types are returned, as well as the tibble dimensions, and row names are not added as they are with 
-# the data frame.
-
-# 3. If you have the name of a variable stored in an object, e.g. var <- "mpg", how can you extract the reference variable
-#    from a tibble?
-var <- "mpg"
-as.tibble(mtcars) %>% select(var)
-# The select() function will allow reference to the variable in the tibble.
-
-# 4. Practice referring to non-syntactic names in the following data frame by:
-#   1. Extracting the variable called 1.
-#   2. Plotting a scatterplot of 1 vs 2.
-#   3. Creating a new column called 3 which is 2 divided by 1.
-#   4. Renaming the columns to one, two and three.
-annoying <- tibble(
-  `1` = 1:10,
-  `2` = `1` * 2 + rnorm(length(`1`))
-)
-
-annoying$`1`
-plot(annoying$`1`, annoying$`2`)
-annoying <- annoying %>%
-  mutate(`3` = `2` / `1`)
-annoying <- annoying %>% rename("one" = `1`, "two" = `2`, "three" = `3`)
-
-# 5. What does tibble::enframe() do? When might you use it?
-tibble::enframe(1:6)
-# This might be useful if you want to create observations and corresponding values from a list of both stored in atomic
-# vectors.  For example, if you had a vector of patient names:
-patients <- c("Martha", "Tim", "Maggie", "Anthony", "Paula", "Sam")
-# you could create a tibble with their names and auto-generated unique IDs using:
-tibble::enframe(patients, name = "ID", value = "patient_name")
-
-# 6. What option controls how many additional column names are printed at the footer of a tibble?
-tibble.max_extra_cols
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
