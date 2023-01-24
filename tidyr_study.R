@@ -380,12 +380,58 @@ ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
 ggplot(data = mpg) +
   geom_boxplot(mapping = aes(x = class, y = hwy, fill = class))
         
+# 3.9.1 Exercises 
+
+# 1.
+ggplot(data = diamonds, mapping = aes(x = factor(1), fill = cut)) +
+  geom_bar(width = 1) +
+  coord_polar(theta = "y")
+# setting theta = y in coord_polar() maps the angle of the slices in the pie chart 
+# to the counts within the levels of the cut variable. The pie chart is just a 
+# stacked bar chart mapped to polar coordinates.
+
+# 2.
+?labs
+# labs() allows us to set the plot labels manually. We can set the plot title, subtitle,
+# caption, tab, and the x and y axes.
+
+# 3.
+?coord_quickmap
+?coord_map
+# coord_map() projects a portion of the earth, approximately spherical, onto a flat 2D
+# plane using projections in the "mapproj" package. coord_quickmap() is an approximation
+# that, unlike coord_map(), preserves straight lines. For this reason, coord_quickmap()
+# works best for smaller areas closer to the equator. Both coord_map() and coord_quickmap()
+# are superseded by coord_sf() and should not be used in new code. All non-sf geoms can
+# be used with coord_sf() by setting the default coordinate system with the default_crs
+# argument.
+?coord_sf
+# coord_sf is used to visualize simple features (sf) objects from the "sf" package.
+
+# 4.
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+
+# coord_fixed() enforces a specified ratio between the physical representation of
+# data units on the plot axes. The default, ratio = 1, ensures that one unit on the
+# x-axis is the same length as one unit on the y-axis. 
+
+# geom_abline() adds the line x = y onto the plot. It shows that for corresponding
+# values of cty (city miles per gallon), values of hwy (highway miles per gallon)
+# are *always* higher, because all of the points are above the ab line (i.e y > x 
+# for every value of x).
+
+# This plot shows that for all observations in the mpg data set, highway miles per
+# gallon is higher than city miles per gallon. The observed cars always have better
+# gas mileage on the highway than in city (non-highway) driving.
 
 
 
-
-# BELOW: older work on this book ##################################
-# DATA MANIPULATION ###############################################
+#####################################################################################
+# BELOW: older work on this book ####################################################
+# DATA MANIPULATION #################################################################
 
 library(tidyverse)
 library(nycflights13)
