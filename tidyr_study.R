@@ -467,16 +467,9 @@ filter(diamonds, carat > 3)  # "diamonds", not "diamond"
 # 5. DATA TRANSFORMATION ##########################################
 ###################################################################
 
-# filter() exercises, 'R for Data Science' ########################
+library(nycflights13)
 
-# 1. Find all flights that
-#   1. Had an arrival delay of two or more hours
-#   2. Flew to Houston (IAH or HOU)
-#   3. Were operated by United, American, or Delta
-#   4. Departed in summer (July, August and September)
-#   5. Arrived more than two hours late, but didn't leave late
-#   6. Were delayed by at least an hour, but made up over 30 minutes in flight
-#   7. Departed between midnight and 6am (inclusive)
+# 5.2.4 Exercises
 
 # 1.1
 flights %>% filter(dep_delay >= 120)
@@ -499,42 +492,39 @@ flights %>% filter(dep_delay >= 60, dep_delay - arr_delay > 30)
 # 1.7
 flights %>% filter(dep_time >= 0 & dep_time <= 6)
 
-# 2. Another useful dplyr filtering helper is between().  What does it do? Can you use it to simplify the code needed to answer 
-#    the previous challenges?
-
+# 2.
 # between(dat, x, y) grabs the values in dat between x and y, inclusive.  Answer 1.7 can be simplified to
 flights %>% filter(between(dep_time, 0, 6))
 # and answer 1.4 can be simplified to
 flights %>% filter(between(month, 7, 9))
 
-# 3. How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+# 3. 
 flights %>% filter(is.na(dep_time)) %>% count()  # 8,255 flights
-# looking at the first 10 rows of this filtered data, dep_delay, arr_time, and arr_delay variables are also missing.  My guess
-# is that these were canceled flights.
+# Looking at the first 10 rows of this filtered data, dep_delay, arr_time, and arr_delay variables are also missing.  
+# My guess is that these were canceled flights.
 
-# 4. Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general
-#    rule? (NA * 0 is a tricky counterexample!)
-
+# 4. 
 NA ^ 0  # not missing because anything to the power of 0 is equal to 1.
 NA | TRUE  # not missing because something is always TRUE or unknown.
-FALSE & NA  # not missing because we cannot ever know if an unknown is also FALSE.
-NA * 0 # missing because of an inconsistency in R's handling of NAs.
+FALSE & NA  # not missing because we can't know if an unknown is also FALSE.
+NA * 0 # missing because a number multiplied by zero is always zero only for finite numbers.
 
-# arrange() exercises, 'R for Data Science' #########################################################
+# 5.3.1 Exercises
 
-# 1. How could you use arrange() to sort all missing values to the start? (Hint: use is.na())
-flights %>% arrange(desc(is.na(dep_time)))
+# 1. 
+flights %>% arrange(desc(is.na(dep_time)), dep_time)
 
-# 2. Sort flights to find the most delayed flights.  Find the flights that left earliest.
-flights %>% arrange(desc(dep_delay + arr_delay))  # I chose to add these values to take into account time made up in-flight
-flights %>% arrange(dep_time)
+# 2. 
+flights %>% arrange(desc(dep_delay))  
+flights %>% arrange(dep_delay)
 
-# 3. Sort flights to find the fastest flights.
+# 3. 
 flights %>% arrange(air_time)
 
-# 4. Which flights traveled the longest? Which traveled the shortest?
+# 4. 
 flights %>% arrange(desc(distance))
 flights %>% arrange(distance)
+
 
 # select() exercises, 'R for Data Science' ##########################################################
 
