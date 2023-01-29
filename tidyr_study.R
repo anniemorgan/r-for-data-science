@@ -526,30 +526,30 @@ flights %>% arrange(desc(distance))
 flights %>% arrange(distance)
 
 
-# select() exercises, 'R for Data Science' ##########################################################
+# 5.4.1 Exercises
 
-
-# 1. Brainstorm as many ways as possible to select dep_time, dep_delay, arr_time, and arr_delay from flights.
+# 1. 
 flights %>% select(starts_with("dep"), starts_with("arr"))
 flights %>% select(dep_time, dep_delay, arr_time, arr_delay)
 flights %>% select(matches("^arr.*"), matches("^dep.*"))
+flights %>% select(dep_time:arr_delay, -starts_with("sched"))
 
-# 2. What happens if you include the name of a variable multiple times in a select() call?
+# 2. 
 flights %>% select(arr_time, arr_time)
-# it just returns it once.
+# A variable name repeated in the select function is only returned once - the column is not duplicated.
 
-# 3. What does the one_of() function do? Why might it be helpful in conjunction with this vector?
-#    vars <- c("year", "month", "day", "dep_delay", "arr_delay")
-# one_of() will grab columns that match an element in a character vector.  If I wanted to select all the columns in the
-# character vector vars, instead of printing them all out, I can just use one_of(vars) and all will be returned.
+# 3. 
 vars <- c("year", "month", "day", "dep_delay", "arr_delay")
-flights %>% select(one_of(vars))
+# any_of() will grab columns that match an element in a character vector.  
+flights %>% select(any_of(vars))
+# This function is useful when there is a need to select multiple specific columns from a data set.
+# It's easier to do that by feeding a character vector of variable names to select() instead of typing
+# them all out, sans quotation marks, within the select() function.
 
-# 4. Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can 
-#    you change that default?
+# 4. 
 select(flights, contains("TIME"))
-# select() looks for columns containing "TIME" in any case, upper or lower. contains() has an argument ignore.case which is 
-# set to TRUE by default.  You can change it by specifying it in the call to contains().
+# select() looks for columns containing "TIME" in any case, upper or lower. 
+# contains() has an argument ignore.case which is TRUE by default.  
 flights %>% select(contains("TIME", ignore.case = FALSE))
 
 # mutate() exercises, 'R for Data Science' #############################################################
