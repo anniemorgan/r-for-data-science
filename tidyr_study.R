@@ -552,75 +552,80 @@ select(flights, contains("TIME"))
 # contains() has an argument ignore.case which is TRUE by default.  
 flights %>% select(contains("TIME", ignore.case = FALSE))
 
-# mutate() exercises, 'R for Data Science' #############################################################
 
-# 1. Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they're not really
-#    continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.
+# 5.5.2 Exercises
 
-dep_time_mins = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440
-sched_dep_time_mins = (sched_dep_time %/% 100 * 60 + sched_dep_time %% 100) %% 1440
+# 1. 
+flights %>%
+  mutate(
+    dep_time_mins = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440,
+    sched_dep_time_mins = (sched_dep_time %/% 100 * 60 + sched_dep_time %% 100) %% 1440
+  )
 
-# appropriate to create a function to perform this calculation.
-time2mins <- function(x) {
-  (x %/% 100 * 60 + x %% 100) %% 1440
-}
+# 2. 
+# First, arr_time and dep_time need to be changed into minutes, as air_time is in minutes.
 
-flights %>% transmute(dep_time, 
-                      sched_dep_time, 
-                      dep_time_mins = time2mins(dep_time), 
-                      sched_dep_time_mins = time2mins(sched_dep_time))                     
+flights_in_minutes <- mutate(flights,
+       arr_time_mins = (arr_time %/% 100 * 60 + arr_time %% 100) %% 1440,
+       dep_time_mins = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440,
+       air_time_diff = air_time - arr_time_mins + dep_time_mins
+       )
 
-# 2. Compare air_time with arr_time - dep_time. What do you expect to see? What do you see? What do you need to do to fix it?
-flights %>% transmute(air_time, arr_time, dep_time, arr_time - dep_time)
-# I would expect air_time and arr_time - dep_time to be equal, but they are not.  arr_time and dep_time need to be changed into
-# minutes instead of hour and minutes in one string.
-
-f <- flights %>% transmute(air_time, 
-                           arr_time_mins = time2mins(arr_time), 
-                           dep_time_mins = time2mins(dep_time), 
-                           arr_minus_dep = arr_time_mins - dep_time_mins,
-                           air_diff = air_time - arr_minus_dep
-)
-
-# 3. Compare dep_time, sched_dep_time, and dep_delay.  How would you expect those three numbers to be related?
+# I would expect air_time_diff, the difference between the variable air_time and the calculated difference
+# in minutes of the arr_time and dep_time variables, to be all zeros.
+flights_in_minutes %>% filter(air_time_diff != 0)
+# A tibble: 327,150 × 22
+# There are many nonzero values of air_time_diff.
+# This suggests that the air_time variable omits some time values, such as taxi, take off, etc.
+# Another factor may be time zone differences in the departure and arrival locations, affecting the values
+# of dep_time and arr_time.
+     
+# 3. 
 flights %>% select(dep_time, sched_dep_time, dep_delay)
 # I would expect dep_delay to be the difference of sched_dep_time and dep_time.
-f <- flights %>% transmute(dep_time, 
-                           sched_dep_time, 
-                           dep_time_mins = time2mins(dep_time), 
-                           sched_dep_time_mins = time2mins(sched_dep_time),
-                           delay_calc = dep_time_mins - sched_dep_time_mins,
-                           dep_delay,
-                           dep_diff = dep_delay - delay_calc)
+# Let's find out if this is true by calculating the delays in minutes from dep_time and sched_dep_time,
+# then finding the difference between the calculated delays in minutes and dep_delay:
+flight_delays <- flights %>% 
+  mutate(
+    dep_time_mins = (dep_time %/% 100 * 60 + dep_time %% 100) %% 1440, 
+    sched_dep_time_mins = (sched_dep_time %/% 100 * 60 + sched_dep_time %% 100) %% 1440,
+    delay_calc = dep_time_mins - sched_dep_time_mins,
+    dep_diff = dep_delay - delay_calc
+    )
 
-f %>% filter(dep_diff != 0, dep_diff != 1440)
+flight_delays %>% filter(dep_diff != 0, dep_diff != 1440)
+# There are no flights where dep_diff is not equal to 0 or 1440, the latter indicating flights
+# that were scheduled before midnight on a given day, but were delayed until after midnight i.e.
+# the following day.
 
-# 4. Find the 10 most delayed flights using a ranking function. How do you want to handle ties? Carefully read the 
-#    documentation for min_rank().
-f <- flights %>% transmute(arr_delay = sort(arr_delay, decreasing = TRUE, na.last = TRUE), 
-                           rank = min_rank(desc(sort(arr_delay, decreasing = TRUE, na.last = TRUE))))
+# 4. 
+# I chose arr_delay to find the most delayed flights, to account for in flight savings or loss of time.
+# I want to capture ties as the same rank, so I chose min_rank() for the ranking function. 
+# It's necessary to use desc(arr_delay) to show the most delayed flights as the lowest ranks.
+top10_delays <- flights %>% 
+  mutate(
+    arr_delay = sort(arr_delay, decreasing = TRUE, na.last = TRUE), 
+    rank = min_rank(desc(sort(arr_delay, decreasing = TRUE, na.last = TRUE)))
+    )
 
-f %>% top_n(-10)
+top10_delays %>% top_n(-10)
 
-# I chose arr_delay to find the most delayed flights, to account for catching up time in-flight, or losing time in-flight.  
-# I want to capture ties as the same rank, so I chose min_rank() for the ranking function.  It's necessary to use desc(arr_delay)
-# to show the flights with the highest delay value as the lowest ranks.
-
-# 5. What does 1:3 + 1:10 return? Why?
+# 5. 
 1:3 + 1:10
 # [1]  2  4  6  5  7  9  8 10 12 11
 # Warning message:
 #   In 1:3 + 1:10 :
 #   longer object length is not a multiple of shorter object length
 # 
-# It looks like the addition was accomplished like this:
+# It appears that the addition was accomplished like this:
 #   1 2 3 1 2 3 1 2  3  1
 # + 1 2 3 4 5 6 7 8  9  10
 # = 2 4 6 5 7 9 8 10 12 11
-# The smaller vector was repeated over the length of the longer vector.  The warning message exists to show that the smaller
-# vector was not applied an equal number of times, because its length is not a divisor of the longer vector's length.
+# The smaller vector was repeated over the length of the longer vector.  
+# The warning message exists to show that the smaller vector was not applied an equal number of times, 
+# because its length is not a divisor of the longer vector's length.
 
-# 6. What trigonometric functions does R provide?
+# 6. 
 # R provides cos(x), sin(x), tan(x) acos(x), asin(x), atan(x), and atan2(y, x).
 # They respectively compute the cosine, sine, tangent, arc-cosine, arc-sine, arc-tangent, and the two-argument arc-tangent.
 # cospi(x), sinpi(x), and tanpi(x) compute cos(pi*x), sin(pi*x), and tan(pi*x).
