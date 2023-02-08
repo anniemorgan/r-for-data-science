@@ -630,19 +630,12 @@ top10_delays %>% top_n(-10)
 # They respectively compute the cosine, sine, tangent, arc-cosine, arc-sine, arc-tangent, and the two-argument arc-tangent.
 # cospi(x), sinpi(x), and tanpi(x) compute cos(pi*x), sin(pi*x), and tan(pi*x).
 
-# summarise() exercises, 'R for Data Science' #############################################################
+# 5.6.7 Exercises
 
 not_cancelled <- flights %>%
   filter(!is.na(dep_delay), !is.na(arr_delay))
 
-# 1. Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights. Consider
-#    the following scenarios:
-#    * A flight is 15 minutes early 50% of the time, and 15 minutes late 50% of the time.
-#    * A flight is always 10 minutes late.
-#    * A flight is 30 minutes early 50% of the time, and 30 minutes late 50% of the time.
-#    * 99% of the time a flight is on time. 1% of the time it's 2 hours late.
-#    Which is more important: arrival delay or departure delay?
-
+# 1. 
 by_flight <- not_cancelled %>% group_by(flight)
 
 # find the most- and least-delayed departures for each flight number:
@@ -677,18 +670,14 @@ not_cancelled %>%
 # flights seem to be delayed on departure more on average than delayed on arrival. I would say that departure delay is 
 # more important for that reason.
 
-# 2. Come up with another approach that will give you the same output as not_cancelled %>% count(dest) and not_cancelled %>%
-#    count(tailnum, wt = distance) (without using count()).
-
+# 2. 
 not_cancelled %>% count(dest)
 not_cancelled %>% group_by(dest) %>% summarise(n = n())
 
 not_cancelled %>% count(tailnum, wt = distance)
 not_cancelled %>% group_by(tailnum) %>% summarise(n = sum(distance))
 
-# 3. Our definition of cancelled flights (is.na(dep_delay) | is.na(arr_delay)) is slightly suboptimal. Why? Which is the
-#    most important column?
-
+# 3. 
 flights %>% filter(is.na(dep_delay) | is.na(arr_delay))
 flights %>% filter(is.na(arr_delay)) %>% summarise(sum(!is.na(dep_delay)))
 flights %>% filter(is.na(dep_delay)) %>% summarise(sum(!is.na(arr_delay)))
@@ -697,9 +686,7 @@ flights %>% filter(is.na(dep_delay)) %>% summarise(sum(!is.na(arr_delay)))
 # The more important field to filter is dep_delay, because all flights with is.na(dep_delay) == TRUE also have NA values for
 # arr_delay.
 
-# 4. Look at the number of cancelled flights per day.  Is there a pattern? Is the proportion of cancelled flights related to
-#    the average delay?
-
+# 4. 
 flights %>% 
   group_by(year, month, day) %>% 
   summarise(num_cancelled = sum(is.na(dep_delay)), avg_dep_delay = mean(dep_delay, na.rm = TRUE), 
@@ -709,9 +696,7 @@ flights %>%
 # There seems to be a connection between number of cancelled flights and average departure and arrival delay times: higher
 # numbers of cancelled flights tend to occur on days with higher average departure and arrival delay times.
 
-# 5. Which carrier has the worst delays? Challenge: can you disentangle the effects of bad airports vs. bad carriers? Why/why
-#    not? (Hint: think about flights %>% group_by(carrier, dest) %>% summarise(n))
-
+# 5. 
 flights %>% 
   group_by(carrier) %>%
   summarise(avg_dep_delay = mean(dep_delay, na.rm = TRUE), avg_arr_delay = mean(arr_delay, na.rm = TRUE)) %>%
@@ -746,8 +731,7 @@ flights %>%
 # F9's average delay times are still higher than the average delay times overall for the DEN destination. However, it's
 # likely that some of the high delay times are due to the DEN airport's problems.
 
-# 6. What does the sort argument to count() do? When might you use it?
-
+# 6. 
 flights %>%
   group_by(carrier) %>%
   count(dest, sort = TRUE)
@@ -755,32 +739,10 @@ flights %>%
 # the sort argument to count() orders the counts by decreasing value of n.  This is helpful if you'd like to look at the
 # highest counts for a given grouping.
 
-# Grouped mutates (and filters) exercises, 'R for Data Science' ###############################################
+# 5.7.1 Exercises
 
-# 1. Refer back to the lists of useful mutate and filtering functions. Describe how each operation changes when you combine
-#    it with a grouping.
-
+# 1. 
 # They operate within each group rather than over the entire tibble.
-
-# 2. Which plane (tailnum) has the worst on-time record?
-
-# 3. What time of day should you fly if you want to avoid delays as much as possible?
-
-# 4. For each destination, compute the total minutes of delay. For each flight, compute the proportion of the total delay
-#    for its destination.
-
-# 5. Delays are typically temporally correlated: even once the problem that cause the initial delay has been resolved,
-#    later flights are delayed to allow earlier flights to leave. Using lag(), explore how the delay of a flight is related 
-#    to the delay of the immediately preceding flight.
-
-# 6. Look at each destination. Can you find flights that are suspiciously fast? (i.e. flights that represent a potential data
-#    entry error). Compute the air time a flight relative to the shortest flight to that destination. Which flights were most
-#    delayed in the air?
-
-# 7. Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
-
-# 8. For each plane, count the number of flights before the first delay of greater than 1 hour.
-
 
 
 #########################################################################################################
@@ -876,7 +838,6 @@ t2 <- tibble(
   year = t2.cases$year,
   cases = t2.cases$cases,
   population = t2.pop$population)
-)
 
 ggplot(t2, aes(year, cases)) + 
   geom_line(aes(group = country), colour = "grey50") + 
