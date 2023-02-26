@@ -667,8 +667,7 @@ not_cancelled %>%
   top_n(n = 1, wt = arr_delay) %>%
   arrange(flight)
 
-# flights seem to be delayed on departure more on average than delayed on arrival. I would say that departure delay is 
-# more important for that reason.
+# Arrival delay is likely more important, because of the possibility of missing connecting flights.
 
 # 2. 
 not_cancelled %>% count(dest)
@@ -742,7 +741,65 @@ flights %>%
 # 5.7.1 Exercises
 
 # 1. 
-# They operate within each group rather than over the entire tibble.
+test_tibble <- tibble(a = 1:10, b = rep(c("one", "two"), each = 5))
+
+# Arithmetic, logical, and modular arithmetic operators, and logarithmic functions are not affected by
+# group_by:
+test_tibble %>%
+  mutate(c = a + 3) %>%
+  group_by(b) %>%
+  mutate(d = a + 3)
+
+test_tibble %>%
+  mutate(c = a > 5) %>%
+  group_by(b) %>%
+  mutate(d = a > 5)
+
+test_tibble %>%
+  mutate(c = a %% 3) %>%
+  group_by(b) %>% 
+  mutate(d = a %% 3)
+
+test_tibble %>% 
+  mutate(c = log(a)) %>% 
+  group_by(b) %>% 
+  mutate(d = log(a))
+
+# Summary functions return values per group when used on grouped data with mutate() and filter():
+test_tibble %>%
+  mutate(a_sum = sum(a)) %>%
+  group_by(b) %>%
+  mutate(a_sum_grouped = sum(a))
+
+test_tibble %>% 
+  mutate(a_med = median(a)) %>% 
+  group_by(b) %>% 
+  mutate(a_med_grouped = median(a))
+
+# Offset functions lag() and lead() respond to group_by and return values within each group:
+test_tibble %>% 
+  mutate(lag_a = lag(a), lead_a = lead(a)) %>% 
+  group_by(b) %>% 
+  mutate(lag_a_groupd = lag(a), lead_a_grouped = lead(a))
+
+# Cumulative functions respect groupings in data:
+test_tibble %>%
+  mutate(c = cumsum(a)) %>% 
+  group_by(b) %>% 
+  mutate(d = cumsum(a))
+
+# Ranking functions also respect groupings:
+test_tibble %>% 
+  mutate(c = min_rank(a)) %>% 
+  group_by(b) %>% 
+  mutate(d = min_rank(a))
+
+
+
+
+
+
+
 
 
 #########################################################################################################
