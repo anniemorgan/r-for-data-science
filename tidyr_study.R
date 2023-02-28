@@ -794,13 +794,35 @@ test_tibble %>%
   group_by(b) %>% 
   mutate(d = min_rank(a))
 
+# 2.
+# Plane with worst arrival on-time record:
+flights %>% 
+  filter(!is.na(arr_delay)) %>%
+  group_by(tailnum) %>%
+  summarise(mean_arr_delay = mean(arr_delay), n = n()) %>% 
+  filter(min_rank(desc(mean_arr_delay)) == 1)
 
+# Plane with worst departure on-time record:
+flights %>%
+  filter(!is.na(dep_delay)) %>% 
+  group_by(tailnum) %>% 
+  summarise(mean_dep_delay = mean(dep_delay), n = n()) %>% 
+  filter(min_rank(desc(mean_dep_delay)) == 1)
 
+# Both of these planes flew only one flight. Run the analysis again on planes with at least 20 flights:
+flights %>% 
+  filter(!is.na(arr_delay)) %>%
+  group_by(tailnum) %>%
+  summarise(mean_arr_delay = mean(arr_delay), n = n()) %>% 
+  filter(n >= 20) %>% 
+  filter(min_rank(desc(mean_arr_delay)) == 1)
 
-
-
-
-
+flights %>%
+  filter(!is.na(dep_delay)) %>% 
+  group_by(tailnum) %>% 
+  summarise(mean_dep_delay = mean(dep_delay), n = n()) %>% 
+  filter(n >= 20) %>% 
+  filter(min_rank(desc(mean_dep_delay)) == 1)
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
