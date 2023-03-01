@@ -824,6 +824,36 @@ flights %>%
   filter(n >= 20) %>% 
   filter(min_rank(desc(mean_dep_delay)) == 1)
 
+# 3.
+# Mean arrival delays by hour of day:
+flights %>%
+  group_by(hour) %>%  # group by hour to view time of day summaries
+  summarise(mean_arr_delay = mean(arr_delay, na.rm = TRUE)) %>% 
+  arrange(mean_arr_delay)
+# Morning flights (between 5 and 9 AM) are the least delayed upon arrival. This makes sense because
+# they are more likely to be the first flight of the day, therefore not affected by delays from previous
+# flights that day.
+
+# Top 10 hours of day with highest mean arrival delays:
+flights %>%
+  group_by(hour) %>% 
+  summarise(mean_arr_delay = mean(arr_delay, na.rm = TRUE), n = n()) %>% 
+  filter(min_rank(desc(mean_arr_delay)) < 10) %>%
+  arrange(mean_arr_delay)
+# These hours are all late afternoon, evening and nighttime hours. The worst mean arrival delay
+# was in hour 21, or 9 PM.
+
+# Top 10 hours of day with highest mean arrival delays, only looking at delayed arrivals:
+flights %>%
+  filter(arr_delay > 0) %>% 
+  group_by(hour) %>% 
+  summarise(mean_arr_delay = mean(arr_delay, na.rm = TRUE), n = n()) %>% 
+  filter(min_rank(desc(mean_arr_delay)) < 10) %>% 
+  arrange(mean_arr_delay)
+# Filtering out flights that arrived ahead of schedule, only looking at delayed arrivals, shows that
+# the top 10 hours with highest mean arrival delays were in the afternoon and evening, ranging from
+# 2 PM to 10 PM.
+
 #########################################################################################################
 # TIDY DATA #############################################################################################
 #########################################################################################################
