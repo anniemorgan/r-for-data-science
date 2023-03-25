@@ -854,6 +854,27 @@ flights %>%
 # the top 10 hours with highest mean arrival delays were in the afternoon and evening, ranging from
 # 2 PM to 10 PM.
 
+# 4.
+flights %>% 
+  filter(arr_delay > 0) %>% 
+  group_by(dest) %>% 
+  mutate(total_delay = sum(arr_delay), prop_delay = arr_delay / total_delay) %>% 
+  select(dest, carrier, flight, arr_delay, total_delay, prop_delay)
+
+# 5.
+lag_delays <- flights %>%
+  arrange(origin, month, day, dep_time) %>% 
+  group_by(origin) %>% 
+  mutate(lag_delay = lag(dep_delay)) %>% 
+  filter(!is.na(dep_delay), !is.na(lag_delay))
+
+lag_delays %>% 
+  group_by(lag_delay) %>% 
+  summarize(mean_delay = mean(dep_delay)) %>% 
+  ggplot(aes(y = mean_delay, x = lag_delay)) +
+  geom_point() 
+
+
 #########################################################################################################
 # TIDY DATA #############################################################################################
 #########################################################################################################
