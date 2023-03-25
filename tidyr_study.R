@@ -874,6 +874,108 @@ lag_delays %>%
   ggplot(aes(y = mean_delay, x = lag_delay)) +
   geom_point() 
 
+###################################################################
+# 7. EXPLORATORY DATA ANALYSIS ####################################
+###################################################################
+
+# 7.3.4 Exercises
+
+# 1.
+# histograms of each dimension variable:
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = x), binwidth = 0.1)
+
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = y), binwidth = 0.1)
+
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = z), binwidth = 0.1)
+
+# summary statistics for each dimension variable:
+summary(select(diamonds, x, y, z))
+# x                y                z         
+# Min.   : 0.000   Min.   : 0.000   Min.   : 0.000  
+# 1st Qu.: 4.710   1st Qu.: 4.720   1st Qu.: 2.910  
+# Median : 5.700   Median : 5.710   Median : 3.530  
+# Mean   : 5.731   Mean   : 5.735   Mean   : 3.539  
+# 3rd Qu.: 6.540   3rd Qu.: 6.540   3rd Qu.: 4.040  
+# Max.   :10.740   Max.   :58.900   Max.   :31.800 
+
+# x and y are probably length and width, as most diamonds are cut into round, circular shapes.
+# There are outliers, probably due to data entry error, where a decimal was incorrectly placed.
+# For example, the max value of y, 58.9, is likely a data entry error with the correct value for
+# that observation being 5.89.
+
+# 2.
+summary(select(diamonds, price))
+# price      
+# Min.   :  326  
+# 1st Qu.:  950  
+# Median : 2401  
+# Mean   : 3933  
+# 3rd Qu.: 5324  
+# Max.   :18823    
+
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 20)
+# there is a hole in the histogram around $1500. Zoom in:
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 20) +
+  coord_cartesian(xlim = c(0, 2500))
+# strangely, there are no diamonds priced between $1456 and $1544:
+ggplot(diamonds) +
+  geom_histogram(mapping = aes(x = price), binwidth = 1) +
+  coord_cartesian(xlim = c(1450, 1550))
+
+diamonds %>% filter(price > 1455 & price < 1545)
+# A tibble: 0 × 10
+
+# 3. 
+diamonds %>% 
+  filter(carat == 0.99 | carat == 1) %>% 
+  group_by(carat) %>% 
+  summarize(count = n())
+# A tibble: 2 × 2
+# carat count
+# <dbl> <int>
+# 0.99    23
+#   1     1558
+
+# There are only 23 diamonds that are 0.99 carat, but over 1500 that are 1 carat. This is likely
+# due to the fact that 1-carat diamonds command a higher price and are more popular than those 
+# under 1 carat.
+
+# 4.
+# Using the histogram of y with binwidth set to 0.5:
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) 
+
+# set ylim = c(0, 50):
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+# this reveals outliers around y = 33 and y = 50
+
+# set xlim = c(0, 10):
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y), binwidth = 0.5) +
+  coord_cartesian(xlim = c(0, 10))
+# shows outliers at y = 0
+
+# without setting binwidth:
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y)) 
+
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y)) +
+  coord_cartesian(ylim = c(0, 50))
+
+ggplot(diamonds) + 
+  geom_histogram(mapping = aes(x = y)) +
+  coord_cartesian(xlim = c(0, 10))
+# binwidth is not scaled when zooming in (or out) using coord_cartesian() xlim or ylim.
+
+
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
