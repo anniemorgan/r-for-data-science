@@ -975,7 +975,31 @@ ggplot(diamonds) +
   coord_cartesian(xlim = c(0, 10))
 # binwidth is not scaled when zooming in (or out) using coord_cartesian() xlim or ylim.
 
+# 7.4.1 Exercises
 
+# 1.
+diamonds2 <- diamonds %>% 
+  mutate(y = ifelse(y < 3 | y > 20, NA, y))
+# try a histogram first:
+ggplot(diamonds2) + geom_histogram(mapping = aes(x = y))
+# geom_histogram() gives a warning message with the number of NA values removed
+# now try a bar chart:
+ggplot(diamonds2) + geom_bar(mapping = aes(x = y))
+# again, there is a warning message with the number of NA values removed, however
+# in the bar chart we can see the missing bars in the plot. This difference exists because
+# a histogram displays counts in terms of the area of the bars, and the bar chart shows the
+# count data directly over the value of the discrete variable on the x axis. Individual data
+# points (discrete values) aren't displayed in a histogram - the bars in a histogram cover
+# a range of values, instead of an exact discrete value.
+
+# 2.
+diamonds2 %>% summarize(mean_reg = mean(y), 
+                        mean_na.rm = mean(y, na.rm = TRUE),
+                        sum_reg = sum(y),
+                        sum_na.rm = sum(y, na.rm = TRUE))
+# na.rm = TRUE allows the mean() and sum() functions to ignore any NA values in their
+# calculations. If na.rm = FALSE, the NA values are included in the calculations, and the
+# resulting value is NA, due to the NA values within the data.
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
