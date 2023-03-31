@@ -1001,6 +1001,57 @@ diamonds2 %>% summarize(mean_reg = mean(y),
 # calculations. If na.rm = FALSE, the NA values are included in the calculations, and the
 # resulting value is NA, due to the NA values within the data.
 
+# 7.5.1.1 Exercises
+
+# 1.
+library(nycflights13)
+# create a new variable to indicate whether or not a flight was cancelled, using the
+# dep_time variable (if dep_time is NA, it means the flight was cancelled). Then use
+# a boxplot to visualize the distribution of scheduled departure times (sched_dep_time)
+# in cancelled vs. non-cancelled flights.
+flights %>% 
+  mutate(is_cancelled = ifelse(is.na(dep_time), "cancelled", "not cancelled")) %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = is_cancelled, y = sched_dep_time)) +
+  labs(x = "Flight Cancellation Status", y = "Scheduled Departure Time")
+
+# 2.
+# I suspect that carat is the variable that most determines a diamond's price.
+# Looking at the histogram of the carat variable, it's skewed left:
+diamonds %>% 
+  ggplot() +
+  geom_histogram(mapping = aes(x = carat))
+# I will create a new categorical variable with binned carat sizes, then make a boxplot
+# using the categorical carat variable vs. price:
+diamonds %>% 
+  mutate(carat_cat = if_else(carat < 0.5, "< 0.5", 
+                             if_else(carat < 1, "0.5-1", 
+                                     if_else(carat < 2, "1-2", ">2")))
+  ) %>% ggplot() +
+  geom_boxplot(mapping = aes(x = reorder(carat_cat, carat, FUN = median), y = price)) +
+  labs(x = "Carat", y = "Price")
+# price appears to be strongly correlated with carat.
+# visualize the relationship of carat vs. cut:
+diamonds %>% 
+  ggplot() +
+  geom_boxplot(mapping = aes(x = cut, y = carat))
+# fair cut diamonds have the highest average carat size, and also comprise the highest-carat
+# diamonds in the data set. Diamonds with a better-quality cut are more likely to be smaller
+# because they're perhaps easier to cut well than larger diamonds, with more room for error.
+
+# 3.
+install.packages("ggstance")
+library(ggstance)
+# using the example in the text:
+ggplot(data = mpg) +
+  geom_boxplot(mapping = aes(x = reorder(class, hwy, FUN = median), y = hwy)) +
+  coord_flip()
+# now using ggstance's geom_boxploth:
+ggplot(data = mpg) +
+  geom_boxploth(mapping = aes(y = reorder(class, hwy, FUN = median), x = hwy))
+# the output is the same, with y and x flipped in the plot function call.
+
+
 #########################################################################################################
 # TIDY DATA #############################################################################################
 #########################################################################################################
