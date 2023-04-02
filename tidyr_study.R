@@ -1051,6 +1051,49 @@ ggplot(data = mpg) +
   geom_boxploth(mapping = aes(y = reorder(class, hwy, FUN = median), x = hwy))
 # the output is the same, with y and x flipped in the plot function call.
 
+# 4.
+library(lvplot)
+plot <- ggplot(diamonds, aes(cut, price))
+plot + geom_lv()
+# this plot shows more quantiles than just the quartiles, and has less points in the outlier region.
+
+# 5.
+diamonds %>% 
+  ggplot(mapping = aes(x = price, y = after_stat(density))) +
+  geom_freqpoly(mapping = aes(color = cut), binwidth = 500)
+# It's harder to see the differences in the price distribution among the cuts due to the overlapping
+# lines, despite their colors. It is simple to find which cut has the highest density at any given
+# price, however, because one can see which line is highest above a given price on the x-axis.
+
+diamonds %>% 
+  ggplot(mapping = aes(x = price)) +
+  geom_histogram() +
+  facet_wrap(~cut, ncol = 1, scales = "free_y")
+# The histograms make it easier to view the individual price distributions per cut, so long as the
+# y-axis limits are not fixed. However, with scaled y-axis limits, it is hard to compare the cuts
+# because the counts vary considerably between them.
+
+diamonds %>% 
+  ggplot(mapping = aes(x = cut, y = price)) +
+  geom_violin() 
+# The violin plot shows the shape of each cut's price distribution, but the upper limits are harder
+# to view, as they taper into fine lines compared to the thicker parts of the plot on the lower end.
+
+# 6.
+# ggbeeswarm offers two methods to space out plot points:
+# geom_quasirandom() makes plots that are a combination of a jitter and violin plot. You can choose
+# from a few different methods for how exactly the random locations for the plot points are selected.
+# geom_beeswarm() essentially makes a violin plot with the points.
+library(ggbeeswarm)
+ggplot(data = iris) + 
+  geom_quasirandom(mapping = aes(x = Species, y = Sepal.Length))
+
+ggplot(data = iris) +
+  geom_quasirandom(mapping = aes(x = Species, y = Sepal.Length), method = "tukey")
+
+ggplot(data = iris) +
+  geom_beeswarm(mapping = aes(x = Species, y = Sepal.Length))
+
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
