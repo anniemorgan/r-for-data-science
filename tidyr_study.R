@@ -1094,6 +1094,74 @@ ggplot(data = iris) +
 ggplot(data = iris) +
   geom_beeswarm(mapping = aes(x = Species, y = Sepal.Length))
 
+# 7.5.2.1 Exercises
+
+# 1.
+# Calculating the proportions of each cut within a color would better show the distributions of
+# cuts within colors. We can calculate the proportions using a grouped mutate (window function)
+# and add this as a new variable, then use it as the color fill argument to geom_tile().
+
+diamonds %>% 
+  count(cut, color) %>% 
+  group_by(color) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  ggplot(mapping = aes(x = color, y = cut)) +
+  geom_tile(mapping = aes(fill = proportion))
+
+# We can do the same to visualize the distribution of colors within cuts:
+
+diamonds %>% 
+  count(color, cut) %>% 
+  group_by(cut) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  ggplot(mapping = aes(x = color, y = cut)) +
+  geom_tile(mapping = aes(fill = proportion))
+
+# 2.
+# Plot the distribution of average flight delays in various destinations and months:
+flights %>% 
+  group_by(month, dest) %>% 
+  summarize(mean_dep_delay = mean(dep_delay, na.rm = TRUE)) %>% 
+  ggplot(mapping = aes(x = factor(month), y = dest, fill = mean_dep_delay)) +
+  geom_tile() +
+  labs(x = "Month", y = "Destination", fill = "Avg Dep Delay")
+# The numerous destinations make the plot difficult to read. There are also blank cells
+# which signify destinations and months where no departures took place. Grouping the destinations
+# by region, then creating a plot for each region, might make it easier to read. However, the 
+# data set doesn't contain a field for region. 
+
+# Another option would be to eliminate the blank areas of the plot by filtering out destinations 
+# without departures all 12 months of the year:
+flights %>% 
+  group_by(month, dest) %>% 
+  summarize(mean_dep_delay = mean(dep_delay, na.rm = TRUE)) %>% 
+  group_by(dest) %>% 
+  filter(n() == 12) %>% 
+  ungroup() %>% 
+  mutate(dest = reorder(dest, mean_dep_delay)) %>% 
+  ggplot(mapping = aes(x = factor(month), y = dest, fill = mean_dep_delay)) +
+  geom_tile() +
+  labs(x = "Month", y = "Destination", fill = "Avg Dep Delay")
+
+# 3.
+diamonds %>% 
+  count(color, cut) %>% 
+  ggplot(mapping = aes(x = color, y = cut)) +
+  geom_tile(mapping = aes(fill = n))
+
+diamonds %>% 
+  count(cut, color) %>% 
+  ggplot(mapping = aes(x = cut, y = color)) +
+  geom_tile(mapping = aes(fill = n))
+
+diamonds %>% count(color, cut) %>% print(n = 35)
+diamonds %>% count(cut, color) %>% print(n = 35)
+# there are less diamonds in the Fair and Good cuts than the higher quality cuts.
+# The diamond counts are more evenly distributed among the colors. This makes it easier
+# to see the variation in distributions of cuts within the colors, because the total counts
+# per color are less skewed than for cuts.
+diamonds %>% count(cut)
+diamonds %>% count(color)
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
