@@ -1163,6 +1163,45 @@ diamonds %>% count(cut, color) %>% print(n = 35)
 diamonds %>% count(cut)
 diamonds %>% count(color)
 
+# 7.5.3.1 Exercises
+# install.packages("hexbin")
+
+# 1.
+# cut_width() and cut_number() allow us to set either the width of the bin, or the number of points
+# within bins, respectively.
+
+ggplot(data = diamonds,
+       mapping = aes(color = cut_width(carat, 1, boundary = 0), x = price)) +
+  geom_freqpoly() +
+  labs(x = "Price", y = "Count", color = "Carat")
+# Because there are so many diamonds in the 0-1 carat range, it's difficult to see the distribution
+# of diamonds in the higher carat ranges on the frequency polygon plot using cut_width().
+
+ggplot(data = diamonds,
+       mapping = aes(color = cut_number(carat, 6), x = price)) +
+  geom_freqpoly() +
+  labs(x = "Price", y = "Count", color = "Carat")
+# It is easier to see the distributions within each bin in this frequency polygon, but more 
+# challenging to understand the variety of diamond sizes within each bin. For example, the first
+# bin contains diamonds in the 0.2-0.33 carat range, but the sixth bin holds diamonds that are 
+# between 1.21 and 5.01 carats, a much wider range in terms of carats than the first bin.
+
+# 2.
+ggplot(data = diamonds, 
+       mapping = aes(x = price, y = carat)) +
+  geom_boxplot(mapping = aes(group = cut_number(price, 10)))
+# Box plots using cut_number() to visualize the distribution of carat partitioned by price
+
+ggplot(data = diamonds,
+       mapping = aes(x = price, y = carat)) +
+  geom_boxplot(mapping = aes(group = cut_width(price, 2500)))
+# Box plots using cut_width() to visualize carat distribution within $2500 partitions of price
+
+ggplot(data = diamonds) +
+  geom_hex(mapping = aes(x = price, y = carat))
+# Hexagonal bin plot to visualize the distribution of carat by price.
+
+
 #########################################################################################################
 # TIDY DATA #############################################################################################
 #########################################################################################################
