@@ -1165,6 +1165,7 @@ diamonds %>% count(color)
 
 # 7.5.3.1 Exercises
 # install.packages("hexbin")
+library(hexbin)
 
 # 1.
 # cut_width() and cut_number() allow us to set either the width of the bin, or the number of points
@@ -1201,6 +1202,48 @@ ggplot(data = diamonds) +
   geom_hex(mapping = aes(x = price, y = carat))
 # Hexagonal bin plot to visualize the distribution of carat by price.
 
+# 3.
+# categorize "very small diamonds" as those in the first quartile of carat, and "very large"
+# as those in the last quartile of carat:
+summary(diamonds$carat)
+very_small <- diamonds %>% filter(carat < 0.4)
+very_large <- diamonds %>% filter(carat > 1.04)
+
+ggplot(data = very_small, mapping = aes(x = carat, y = price)) +
+  geom_boxplot(mapping = aes(group = cut_number(carat, 5)))
+# Cutting the small diamonds into 5 groups based on carat, there are outliers in the high price
+# range in each group, but especially in diamonds ranging from 0.2-0.3 carats and 0.325-0.35 carats.
+# Perhaps this is due to this carat size being ideal for diamond stud earrings, so higher quality
+# diamonds in these carat ranges still may fetch an unusually high price for their size. The inter-
+# quartile range for each grouping increase slighly with increasing carat size, but not dramatically.
+
+ggplot(data = very_small, mapping = aes(x = carat, y = price)) +
+  geom_boxplot(mapping = aes(group = cut_width(carat, 0.05)))
+# Cutting the small diamonds into groups based on carat ranges of 0.05, the spike in high-priced
+# outlier diamonds is visible in diamonds ranging from 0.25-0.35 carats.
+
+ggplot(data = very_large, mapping = aes(x = carat, y = price)) +
+  geom_boxplot(mapping = aes(group = cut_number(carat, 5)))
+# Making a similar plot as for the small diamonds, cutting the large diamonds into 5 groups, it is
+# first apparent that the group containing the largest diamonds spans the greatest range of sizes,
+# from slightly less than 2 carats up to 5 carats. The IQR for this super-large diamond category
+# is markedly higher than those in the smaller-but-still-large diamond groups. There are many outliers
+# in the high price range in the first two groups, ranging in carat size from 1.04 to about 1.25 
+# carats. This could be due to the fact that this is a popular carat range for diamond engagement
+# rings, and diamonds with high quality in other aspects outside of size may still fetch very high
+# prices, comparable to diamonds a carat or more larger but perhaps with lower quality in other areas.
+
+ggplot(data = very_large, mapping = aes(x = carat, y = price)) +
+  geom_boxplot(mapping = aes(group = cut_width(carat, 1)))
+# Again making a similar plot as for the small diamonds, with a cut width of 1 carat based on the 
+# larger range of carat sizes in this "very large" diamond data set, we see that there is only one
+# diamond in the highest group. We can see this by filtering the data set on diamonds with carat 
+# value greater than 4.5:
+very_large %>% filter(carat > 4.5)
+# Only one observation in the very_large data set has a diamond greater than 5 carats in size.
+# Looking at the other groups in this plot, we see that the median prices jump dramatically as 
+# carat size increases, and the range of prices becomes smaller and more concentrated in the high
+# price range.
 
 #########################################################################################################
 # TIDY DATA #############################################################################################
